@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import model.exceptions.DomainException;
+
 public class Reservation {
 
 	private Integer roomNumber;
@@ -12,7 +14,19 @@ public class Reservation {
 	
 	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	
-	public Reservation(Integer roomNumber, Date checkIn, Date checkOut) {
+	//throws DomainException usa quando usa-se exceção em vez de RuntimeException
+	/*public Reservation(Integer roomNumber, Date checkIn, Date checkOut) throws DomainException {
+		if(!checkOut.after(checkIn)) {
+			// throw lança a exeção/ "corta" metodo
+			throw new  DomainException("Check-out date must be after check-in date");
+		}*/
+	public Reservation(Integer roomNumber, Date checkIn, Date checkOut){
+		if(!checkOut.after(checkIn)) {
+			// throw lança a exeção/ "corta" metodo
+			throw new  DomainException("Check-out date must be after check-in date");
+		}
+		
+		
 		this.roomNumber = roomNumber;
 		this.checkIn = checkIn;
 		this.checkOut = checkOut;
@@ -39,18 +53,21 @@ public class Reservation {
 	//converte valor de diff que tava em milisegundos para dias
 		return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
 	}
-public String updateDates(Date checkIn, Date checkOut) {
+	
+	//throws DomainException vai propagar minha exceção para ser tratada em program
+public void updateDates(Date checkIn, Date checkOut) {
 	Date now = new Date();
 	if(checkIn.before(now) || checkOut.before(now)) {
-		return "Reservation dates for update must be future dates";
+		// throw lança a exeção/ "corta" metodo
+		throw new DomainException("Reservation dates for update must be future dates");
 	}
 	if(!checkOut.after(checkIn)) {
-		return "Check-out date must be after check-in date";
+		// throw lança a exeção/ "corta" metodo
+		throw new  DomainException("Check-out date must be after check-in date");
 	}
 	this.checkIn = checkIn;
 	this.checkOut = checkOut;
-	// se a operação não deu nenhum erro retorna null
-		return null;
+	
 }
 	
 	@Override
